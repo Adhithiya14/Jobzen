@@ -9,6 +9,7 @@ export default function Resume() {
     const [recommendedJobs, setRecommendedJobs] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [showCriteria, setShowCriteria] = useState(false);
     const navigate = useNavigate();
 
     const handleFileChange = (e) => {
@@ -112,18 +113,60 @@ export default function Resume() {
                 {error && <div style={{ color: 'var(--danger)', marginTop: '1rem', padding: '0.5rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '0.5rem' }}>{error}</div>}
             </div>
 
+            {loading && !analysis && (
+                <div className="grid">
+                    <div className="card skeleton" style={{ height: '120px' }}></div>
+                    <div className="card skeleton" style={{ height: '120px' }}></div>
+                </div>
+            )}
+
             {analysis && (
                 <div className="analysis-results">
                     {/* Score and Skills Grid */}
                     <div className="grid" style={{ marginBottom: '2rem' }}>
-                        <div className="card flex-between">
-                            <div>
-                                <h3 style={{ margin: '0 0 0.5rem 0' }}>Resume Score</h3>
-                                <div className="text-sm text-muted">Based on impact, keywords, and clarity.</div>
+                        <div className="card flex-col">
+                            <div className="flex-between">
+                                <div>
+                                    <h3 style={{ margin: '0 0 0.5rem 0' }}>Resume Score</h3>
+                                    <div className="text-sm text-muted">Based on impact, keywords, and clarity.</div>
+                                </div>
+                                <div style={{ fontSize: '3.5rem', fontWeight: '800', color: analysis.score > 70 ? 'var(--success)' : 'var(--warning)', alignSelf: 'flex-start' }}>
+                                    {analysis.score}/100
+                                </div>
                             </div>
-                            <div style={{ fontSize: '3.5rem', fontWeight: '800', color: analysis.score > 70 ? 'var(--success)' : 'var(--warning)' }}>
-                                {analysis.score}/100
-                            </div>
+                            
+                            {analysis.score_criteria && analysis.score_criteria.length > 0 && (
+                                <div style={{ marginTop: '1rem', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
+                                    <button 
+                                        className="btn outline" 
+                                        onClick={() => setShowCriteria(!showCriteria)}
+                                        style={{ width: '100%', justifyContent: 'center', marginBottom: showCriteria ? '1rem' : '0' }}
+                                    >
+                                        {showCriteria ? 'Hide Score Breakdown' : 'View Score Breakdown'}
+                                    </button>
+                                    
+                                    {showCriteria && (
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.75rem' }}>
+                                            {analysis.score_criteria.map((crt, idx) => {
+                                                const match = crt.match(/^(.*?)\s*\((.*?)\)/);
+                                                if (match) {
+                                                    let title = match[1].trim();
+                                                    // Shorten titles if desired (e.g., ATS Compatibility -> ATS)
+                                                    if (title === "ATS Compatibility") title = "ATS";
+                                                    const fractionScore = match[2]; // Captures e.g "8/10" directly
+                                                    return (
+                                                        <div key={idx} style={{ padding: '0.75rem', background: 'var(--bg-dark)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                            <strong style={{ fontSize: '0.85rem' }}>{title}</strong>
+                                                            <span style={{ fontWeight: 'bold', color: 'var(--primary)', fontSize: '0.9rem' }}>{fractionScore}</span>
+                                                        </div>
+                                                    );
+                                                }
+                                                return null;
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         <div className="card">
