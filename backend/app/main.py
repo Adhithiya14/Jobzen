@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Depends, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from contextlib import asynccontextmanager
 from typing import List, Optional
 from sqlmodel import Session, select
@@ -49,12 +50,26 @@ def read_root():
 def health_check():
     return {"status": "healthy"}
 
+class ChatMessage(BaseModel):
+    role: str
+    text: str
+
 class ChatRequest(BaseModel):
     message: str
+    history: List[ChatMessage] = []
+
+@app.post("/chat/stream")
+async def chat_stream_endpoint(request: ChatRequest):
+    history_dicts = [{"role": m.role, "text": m.text} for m in request.history]
+    return StreamingResponse(
+        chat_service.generate_response_stream(request.message, history_dicts),
+        media_type="text/event-stream"
+    )
 
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
-    response = await chat_service.generate_response(request.message)
+    history_dicts = [{"role": m.role, "text": m.text} for m in request.history]
+    response = await chat_service.generate_response(request.message, history_dicts)
     return {"response": response}
 
 @app.post("/resume/analyze")

@@ -31,20 +31,50 @@ export default function Chat() {
 
     const handleSend = async () => {
         if (!input.trim()) return;
-        setMessages(prev => [...prev, { role: 'user', text: input }]);
+        const userMsg = { role: 'user', text: input };
+        setMessages(prev => [...prev, userMsg]);
         setInput('');
 
+        // Prepare context for backend
+        const lastMessages = messages.slice(-10); // Last 10 messages for context
+
         try {
-            const response = await fetch('http://localhost:8001/chat', {
+            const response = await fetch('http://localhost:8001/chat/stream', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ message: input }),
+                body: JSON.stringify({
+                    message: input,
+                    history: [...lastMessages, userMsg]
+                }),
             });
-            const data = await response.json();
-            setMessages(prev => [...prev, { role: 'bot', text: data.response }]);
+
+            if (!response.ok) throw new Error('Stream request failed');
+
+            // Add placeholder bot message
+            setMessages(prev => [...prev, { role: 'bot', text: '' }]);
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let accumulatedText = "";
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                accumulatedText += chunk;
+
+                // Update the last message (the placeholder)
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    newMessages[newMessages.length - 1].text = accumulatedText;
+                    return newMessages;
+                });
+            }
         } catch (error) {
+            console.error("Chat Error:", error);
             setMessages(prev => [...prev, { role: 'bot', text: "Error: Could not connect to backend." }]);
         }
     };

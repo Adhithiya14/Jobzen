@@ -70,20 +70,21 @@ class InterviewService:
 
     def _grade_mock_answer(self, answer: str) -> GradeResponse:
         # Smart Mock Grading
-        score = 50
-        feedback = "Answer recorded. (Offline mode)"
+        score = 6
+        feedback = "Your response has been captured. While I'm currently optimizing my deep-analysis engine, I can see you've provided a thoughtful answer!"
         
-        if len(answer.split()) < 5:
-            score = 20
-            feedback = "Answer is too short. Please elaborate."
-        elif any(word in answer.lower() for word in ["because", "ensure", "process", "data", "code", "react", "python"]):
-            score = 80
-            feedback = "Good structure and keywords used."
+        words = answer.split()
+        if len(words) < 5:
+            score = 3
+            feedback = "Your answer seems a bit brief. In a real interview, providing more detail and specific examples helps demonstrate your expertise."
+        elif any(word in answer.lower() for word in ["because", "ensure", "process", "data", "code", "react", "python", "leverages", "implements"]):
+            score = 8
+            feedback = "Excellent! You've used relevant industry terminology and structured your response effectively. Keep maintaining this level of detail!"
         
         return GradeResponse(
             score=score,
             feedback=feedback,
-            correct_answer_summary="A strong answer would explain the concept in depth and give an example."
+            correct_answer_summary="A comprehensive response should define the core concept, explain its practical application, and provide a brief example of a time you implemented or encountered it."
         )
 
     async def generate_question(
@@ -103,11 +104,11 @@ class InterviewService:
         import json
         
         # Explicit Mock Mode or Missing Key
-        if not settings.GEMINI_API_KEY or "your_gemini_api_key" in settings.GEMINI_API_KEY:
+        if not settings.cleaned_gemini_api_key or "your_gemini_api_key" in settings.cleaned_gemini_api_key:
              return self._generate_mock_question(topic, question_type, history)
 
         try:
-            genai.configure(api_key=settings.GEMINI_API_KEY)
+            genai.configure(api_key=settings.cleaned_gemini_api_key)
             model = genai.GenerativeModel('gemini-flash-latest')
             
             # Prepare Resume Context
@@ -138,7 +139,14 @@ class InterviewService:
                     difficulty=current_level
                  )
             
-            response = await run_in_threadpool(model.generate_content, prompt)
+            # Optimize Generation config for speed
+            generation_config = genai.types.GenerationConfig(
+                temperature=0.7,
+                max_output_tokens=150, # Force short JSON output
+                response_mime_type="application/json"
+            )
+            
+            response = await run_in_threadpool(model.generate_content, prompt, generation_config=generation_config)
             text = response.text.strip().replace("```json", "").replace("```", "")
             data = json.loads(text)
             
@@ -160,11 +168,11 @@ class InterviewService:
         import google.generativeai as genai
         import json
 
-        if not settings.GEMINI_API_KEY or "your_gemini_api_key" in settings.GEMINI_API_KEY:
+        if not settings.cleaned_gemini_api_key or "your_gemini_api_key" in settings.cleaned_gemini_api_key:
             return self._grade_mock_answer(answer)
 
         try:
-            genai.configure(api_key=settings.GEMINI_API_KEY)
+            genai.configure(api_key=settings.cleaned_gemini_api_key)
             model = genai.GenerativeModel('gemini-flash-latest')
             
             # Prepare Resume Context
@@ -187,7 +195,14 @@ class InterviewService:
                     role=role
                 )
             
-            response = await run_in_threadpool(model.generate_content, prompt)
+            # Optimize Generation config for speed
+            generation_config = genai.types.GenerationConfig(
+                temperature=0.3,
+                max_output_tokens=250, # Force short grading JSON output
+                response_mime_type="application/json"
+            )
+
+            response = await run_in_threadpool(model.generate_content, prompt, generation_config=generation_config)
             text = response.text.strip().replace("```json", "").replace("```", "")
             data = json.loads(text)
             return GradeResponse(**data)

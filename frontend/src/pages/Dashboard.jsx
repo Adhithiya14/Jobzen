@@ -75,8 +75,30 @@ export default function Dashboard() {
             )}
 
             {loading ? (
-                <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-secondary)' }}>
-                    <RefreshCw className="spin" size={40} />
+                <div className="grid">
+                    <section className="col-span-full">
+                        <div className="skeleton" style={{ height: '100px', borderRadius: 'var(--radius-lg)' }}></div>
+                    </section>
+                    <section>
+                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <div className="skeleton" style={{ width: '200px', height: '30px' }}></div>
+                        </h2>
+                        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+                            {[1, 2].map(i => (
+                                <div key={i} className="card skeleton" style={{ height: '250px' }}></div>
+                            ))}
+                        </div>
+                    </section>
+                    <section>
+                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <div className="skeleton" style={{ width: '250px', height: '30px' }}></div>
+                        </h2>
+                        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+                            {[1, 2].map(i => (
+                                <div key={i} className="card skeleton" style={{ height: '200px' }}></div>
+                            ))}
+                        </div>
+                    </section>
                 </div>
             ) : error ? (
                 <div className="error-box" style={{ padding: '1rem', background: 'var(--danger)', color: 'white', borderRadius: 'var(--radius-sm)' }}>{error}</div>

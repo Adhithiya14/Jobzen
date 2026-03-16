@@ -88,7 +88,7 @@ CONTEXT:
 - Interview Type: {question_type} (Technical / HR / Behavioral)
 - Previous Question: {previous_question}
 - User Answer: {user_answer}
-- Previous Score: {previous_score} / 100
+- Previous Score: {previous_score} / 10
 - Current Difficulty Level: {difficulty} (Beginner / Intermediate / Advanced)
 
 OBJECTIVE:
@@ -166,7 +166,7 @@ EVALUATE THE FOLLOWING DIMENSIONS (0-10 EACH):
 SCORING RULES:
 - Score each category independently from 0 to 10.
 - Scores must be realistic, justified, and NOT inflated.
-- The total aggregate score should be the sum of these three (Max 30).
+- The total aggregate score should be the average of these three (Max 10).
 
 FEEDBACK RULES:
 - Focus on patterns in reasoning and delivery.
@@ -179,7 +179,7 @@ FEEDBACK RULES:
 (INTERNAL INSTRUCTION):
 Please output the response in the following JSON format ONLY:
 {{
-    "score": <(Sum of 3 scores / 30) * 100 as an integer>,
+    "score": <(Sum of 3 scores / 3) as an integer>,
     "feedback": "Content: <Content Score> / 10\\n- <Short reason 1-2 lines>\\n\\nCommunication: <Communication Score> / 10\\n- <Short reason 1-2 lines>\\n\\nConfidence: <Confidence Score> / 10\\n- <Short reason 1-2 lines>\\n\\nKey Observations:\\n- <Bullet 1>\\n- <Bullet 2>\\n- <Bullet 3 if applicable>",
     "correct_answer_summary": "Ideal Answer: <Concise sample answer text>"
 }}
@@ -205,7 +205,7 @@ EVALUATE DIMENSIONS (0-10 EACH):
 SCORING RULES:
 - Assume a general fresher-to-intermediate level.
 - Score 0-10 per category.
-- Total score is (Sum / 30) * 100.
+- Total score is the integer average of the 3 category scores (0-10).
 
 FEEDBACK RULES:
 - Focus strictly on the asked question.
@@ -215,7 +215,7 @@ FEEDBACK RULES:
 (INTERNAL INSTRUCTION):
 Please output the response in the following JSON format ONLY:
 {{
-    "score": <(Sum of 3 scores / 30) * 100 as an integer>,
+    "score": <(Sum of 3 scores / 3) as an integer>,
     "feedback": "Content: <Content Score> / 10\\n- <Short reason 1-2 lines>\\n\\nCommunication: <Communication Score> / 10\\n- <Short reason 1-2 lines>\\n\\nConfidence: <Confidence Score> / 10\\n- <Short reason 1-2 lines>\\n\\nKey Observations:\\n- <Bullet 1>\\n- <Bullet 2>",
     "correct_answer_summary": "Ideal Answer: <Role-appropriate example answer>"
 }}

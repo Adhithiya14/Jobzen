@@ -32,9 +32,9 @@ export default function MockTest() {
     const [difficulty, setDifficulty] = useState('Beginner');
 
     const ROUNDS = {
-        1: { name: 'Introduction', type: 'HR', limit: 2 },
-        2: { name: 'Technical Deep Dive', type: 'Technical', limit: 3 },
-        3: { name: 'Behavioral / Culture Fit', type: 'HR', limit: 2 }
+        1: { name: 'Introduction', type: 'HR', limit: 10 },
+        2: { name: 'Technical Deep Dive', type: 'Technical', limit: 10 },
+        3: { name: 'Behavioral / Culture Fit', type: 'HR', limit: 10 }
     };
 
     // --- Init & Permissions ---
@@ -221,7 +221,7 @@ export default function MockTest() {
             setStep('feedback');
 
             // Auto-speak feedback highlights
-            const shortFeedback = `You scored ${data.score} out of 100. ${data.feedback.split('.')[0]}.`;
+            const shortFeedback = `You scored ${data.score} out of 10. ${data.feedback.split('.')[0]}.`;
             setTimeout(() => speakText(shortFeedback), 500);
 
         } catch (err) {
@@ -229,6 +229,18 @@ export default function MockTest() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const switchRound = (roundId) => {
+        stopSpeaking();
+        if (isListening) toggleMic();
+        setCurrentRound(roundId);
+        setQCount(0);
+        setQuestionHistory([]);
+        setDifficulty('Beginner');
+        setFeedback(null);
+        setUserAnswer('');
+        setStep('round-intro');
     };
 
     const nextQuestion = () => {
@@ -248,19 +260,15 @@ export default function MockTest() {
         }
         const nextQ = qCount + 1;
         if (nextQ >= ROUNDS[currentRound].limit) {
-            if (currentRound >= 3) {
-                setStep('complete');
-                stopCamera();
-            } else {
-                setCurrentRound(prev => prev + 1);
-                setQCount(0);
-                setStep('round-intro');
-            }
+            // Reached face-to-face round limit, ask them to switch to the next round manually
+            setStep('complete');
         } else {
             setQCount(nextQ);
             fetchQuestion(lastContext);
         }
     };
+
+
 
 
     // --- Render ---
@@ -269,8 +277,8 @@ export default function MockTest() {
 
             {/* Setup Screen */}
             {step === 'setup' && (
-                <div style={{ maxWidth: '600px', margin: '0 auto', width: '100%', flex: 1, display: 'flex', alignItems: 'center' }}>
-                    <div className="card" style={{ background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(16, 185, 129, 0.05))', border: '1px solid rgba(99, 102, 241, 0.2)', padding: '3rem', textAlign: 'center' }}>
+                <div style={{ maxWidth: '600px', margin: '0 auto', width: '100%', flex: 1, display: 'flex', alignItems: 'center', padding: '2rem 0' }}>
+                    <div className="card" style={{ background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(16, 185, 129, 0.05))', border: '1px solid rgba(99, 102, 241, 0.2)', padding: '3rem', textAlign: 'center', width: '100%' }}>
                         <div style={{ padding: '1.5rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '50%', color: 'var(--primary)', width: 'fit-content', margin: '0 auto 1.5rem' }}>
                             <Video size={40} />
                         </div>
@@ -278,7 +286,7 @@ export default function MockTest() {
                         <p style={{ fontSize: '1.1rem', marginBottom: '2rem' }}>Experience a realistic, multi-round interview environment with AI voice and real-time webcam feedback.</p>
 
                         <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
-                            <label style={{ display: 'block', margin: '0 0 0.5rem', fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>TARGET ROLE</label>
+                            <label style={{ display: 'block', margin: '0 0 0.5rem', fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>CUSTOM ROLE</label>
                             <input
                                 type="text"
                                 value={role}
@@ -296,11 +304,26 @@ export default function MockTest() {
             )}
 
             {/* Main Video Interface */}
-            {(step === 'interview' || step === 'feedback' || step === 'round-intro') && (
-                <div className="interview-layout">
-
-                    {/* Left: Video Feed & Questions */}
-                    <div className="video-frame">
+            {(step === 'interview' || step === 'feedback' || step === 'round-intro' || step === 'complete') && (
+                <div style={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100%' }}>
+                    {interviewMode === 'full' && (
+                        <div style={{ display: 'flex', gap: '1rem', padding: '1rem 2rem', background: 'var(--bg-dark)', borderBottom: '1px solid var(--border)', justifyContent: 'center' }}>
+                            {[1, 2, 3].map((roundNum) => (
+                                <button
+                                    key={roundNum}
+                                    onClick={() => step !== 'setup' ? switchRound(roundNum) : null}
+                                    className={`btn ${currentRound === roundNum ? 'primary' : 'outline'}`}
+                                    style={{ flex: 1, maxWidth: '250px', justifyContent: 'center', transition: 'all 0.2s ease' }}
+                                >
+                                    Round {roundNum}: {ROUNDS[roundNum].name}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                    
+                    <div className="interview-layout">
+                        {/* Left: Video Feed & Questions */}
+                        <div className="video-frame">
                         <video
                             ref={videoRef}
                             autoPlay
@@ -350,8 +373,8 @@ export default function MockTest() {
                         {/* Feedback Overlay */}
                         {step === 'feedback' && feedback && (
                             <div style={{ position: 'absolute', inset: 0, background: 'rgba(11, 15, 21, 0.95)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center', zIndex: 50 }}>
-                                <div style={{ fontSize: '4rem', fontWeight: 'bold', color: feedback.score > 70 ? 'var(--success)' : 'var(--warning)', marginBottom: '0.5rem' }}>
-                                    {feedback.score}/100
+                                <div style={{ fontSize: '4rem', fontWeight: 'bold', color: feedback.score > 7 ? 'var(--success)' : 'var(--warning)', marginBottom: '0.5rem' }}>
+                                    {feedback.score}/10
                                 </div>
                                 <h3 style={{ margin: '0 0 1rem', color: 'white' }}>Feedback</h3>
                                 <p style={{ fontSize: '1.1rem', maxWidth: '600px', lineHeight: 1.6, marginBottom: '2rem', color: 'var(--text-secondary)' }}>{feedback.feedback}</p>
@@ -381,6 +404,22 @@ export default function MockTest() {
                                 </button>
                             </div>
                         )}
+                        {/* Complete Overlay for Round */}
+                        {step === 'complete' && (
+                            <div style={{ position: 'absolute', inset: 0, background: 'rgba(11, 15, 21, 0.95)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center', zIndex: 50 }}>
+                                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>✅</div>
+                                <h1 style={{ fontSize: '3rem', color: 'var(--primary)', marginBottom: '1rem' }}>Round Complete</h1>
+                                <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', marginBottom: '2rem' }}>You've finished all 10 questions for Round {currentRound}. Pick another round from the tabs above, or return to dashboard.</p>
+                                
+                                <button
+                                    onClick={() => {stopCamera(); setStep('setup');}}
+                                    className="btn outline"
+                                    style={{ padding: '1rem 3rem' }}
+                                >
+                                    End Interview & Return
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     {/* Right: Controls & Transcript */}
@@ -398,8 +437,8 @@ export default function MockTest() {
 
                                     <div style={{ textAlign: 'center', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '1rem' }}>
                                         <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>SCORE</div>
-                                        <div style={{ fontSize: '3.5rem', fontWeight: '800', lineHeight: 1, color: feedback.score > 70 ? 'var(--success)' : 'var(--warning)' }}>
-                                            {feedback.score}<span style={{ fontSize: '1.5rem', color: 'var(--text-muted)' }}>/100</span>
+                                        <div style={{ fontSize: '3.5rem', fontWeight: '800', lineHeight: 1, color: feedback.score > 7 ? 'var(--success)' : 'var(--warning)' }}>
+                                            {feedback.score}<span style={{ fontSize: '1.5rem', color: 'var(--text-muted)' }}>/10</span>
                                         </div>
                                     </div>
 
@@ -484,21 +523,8 @@ export default function MockTest() {
                                 }
                             </p>
                         </div>
+                        </div>
                     </div>
-                </div>
-            )}
-
-            {/* Complete Screen */}
-            {step === 'complete' && (
-                <div style={{ textAlign: 'center', maxWidth: '600px', margin: '4rem auto', animation: 'fadeIn 0.5s ease-out' }}>
-                    <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🎉</div>
-                    <h1 style={{ fontSize: '3rem', marginBottom: '1rem', background: 'linear-gradient(to right, var(--primary), var(--accent))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Interview Complete!</h1>
-                    <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', marginBottom: '3rem' }}>
-                        You've completed the full simulation. Head back to the dashboard to review your progress.
-                    </p>
-                    <button onClick={() => setStep('setup')} className="btn primary" style={{ padding: '1rem 3rem', fontSize: '1.2rem' }}>
-                        Back to Dashboard
-                    </button>
                 </div>
             )}
 
