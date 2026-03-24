@@ -27,7 +27,7 @@ class ChatService:
 
         try:
             genai.configure(api_key=settings.cleaned_gemini_api_key)
-            model = genai.GenerativeModel('gemini-flash-latest')
+            model = genai.GenerativeModel('gemini-2.5-flash')
             
             # Check for resume context
             resume_text = resume_service.get_current_resume_text()
@@ -70,7 +70,7 @@ class ChatService:
 
         try:
             genai.configure(api_key=settings.cleaned_gemini_api_key)
-            model = genai.GenerativeModel('gemini-flash-latest')
+            model = genai.GenerativeModel('gemini-2.5-flash')
             
             # Check for resume context
             resume_text = resume_service.get_current_resume_text()

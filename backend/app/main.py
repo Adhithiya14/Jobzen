@@ -14,6 +14,7 @@ from backend.app.services.interview import interview_service, QuestionResponse, 
 from backend.app.models.sql import InterviewSession
 from backend.app.models.aptitude import AptitudeQuestion
 from backend.app.services.recommendation import recommendation_service, Job, Course
+from backend.app.services.job_aggregator import job_aggregator_service, JobAggregatorResponse
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -139,6 +140,15 @@ async def get_jobs_recommendation(req: RecommendationRequest):
 @app.get("/recommend/courses", response_model=List[Course])
 async def get_courses(role: str = "Software Engineer"):
     return recommendation_service.get_courses(role)
+
+class JobAggregateRequest(BaseModel):
+    role: str
+    location: Optional[str] = None
+    skills: List[str] = []
+
+@app.post("/jobs/aggregate", response_model=JobAggregatorResponse)
+async def aggregate_jobs(req: JobAggregateRequest):
+    return await job_aggregator_service.aggregate_and_score_jobs(req.role, req.location, req.skills)
 
 @app.get("/aptitude/categories", response_model=List[str])
 async def get_aptitude_categories():

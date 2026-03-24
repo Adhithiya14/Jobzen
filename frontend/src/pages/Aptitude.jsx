@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, ChevronDown, ChevronUp, ArrowLeft, Folder } from 'lucide-react';
+import { BookOpen, ChevronDown, ChevronUp, ArrowLeft, Folder, CheckCircle, XCircle } from 'lucide-react';
 
 const SECTION_MAP = {
     "General Aptitude": ["Arithmetic Aptitude", "Data Interpretation", "Online Aptitude Test", "Data Interpretation Test"],
@@ -16,7 +16,6 @@ const SECTION_MAP = {
 };
 
 export default function Aptitude() {
-    // Flatten allowed categories for checking
     const [fetchedCategories, setFetchedCategories] = useState([]);
     
     // UI State
@@ -27,6 +26,9 @@ export default function Aptitude() {
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [expandedAnswers, setExpandedAnswers] = useState({});
+    
+    // Interactive State
+    const [selectedAnswers, setSelectedAnswers] = useState({});
 
     useEffect(() => {
         fetchCategories();
@@ -43,7 +45,6 @@ export default function Aptitude() {
     };
 
     const fetchQuestions = async (category) => {
-        // Find main category for back navigation context
         let parentCategory = null;
         for (const [main, subs] of Object.entries(SECTION_MAP)) {
             if (subs.includes(category)) {
@@ -58,13 +59,30 @@ export default function Aptitude() {
             const data = await res.json();
             setQuestions(data);
             setSelectedSubCategory(category);
-            setSelectedMainCategory(parentCategory); // ensure parent matches
+            setSelectedMainCategory(parentCategory);
             setExpandedAnswers({}); 
+            setSelectedAnswers({}); // Reset previous selections
         } catch (error) {
             console.error("Failed to fetch questions:", error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSelectOption = (questionId, option) => {
+        // Can't change answer if already viewed or answered
+        if (expandedAnswers[questionId] || selectedAnswers[questionId]) return;
+        
+        setSelectedAnswers(prev => ({
+            ...prev,
+            [questionId]: option
+        }));
+        
+        // Auto-expand to immediately reveal correctness and explanation
+        setExpandedAnswers(prev => ({
+            ...prev,
+            [questionId]: true
+        }));
     };
 
     const toggleAnswer = (questionId) => {
@@ -143,7 +161,6 @@ export default function Aptitude() {
 
                 <div className="grid">
                     {SECTION_MAP[selectedMainCategory].map((subCat, idx) => {
-                        // Optional: Visually indicate if questions are available or generating
                         const isAvailable = fetchedCategories.includes(subCat);
                         return (
                         <button
@@ -197,6 +214,8 @@ export default function Aptitude() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 {questions.map((q, idx) => {
                     const isExpanded = expandedAnswers[q.id];
+                    const selectedOpt = selectedAnswers[q.id];
+
                     return (
                         <div key={q.id} className="card" style={{ animation: 'fadeIn 0.3s ease-out' }}>
                             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -205,22 +224,68 @@ export default function Aptitude() {
                             </div>
 
                             <div style={{ marginLeft: '2.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <span style={{ fontWeight: 'bold', color: 'var(--text-secondary)' }}>(A)</span>
-                                    <span style={{ color: 'var(--text-muted)' }}>{q.option_a}</span>
-                                </div>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <span style={{ fontWeight: 'bold', color: 'var(--text-secondary)' }}>(B)</span>
-                                    <span style={{ color: 'var(--text-muted)' }}>{q.option_b}</span>
-                                </div>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <span style={{ fontWeight: 'bold', color: 'var(--text-secondary)' }}>(C)</span>
-                                    <span style={{ color: 'var(--text-muted)' }}>{q.option_c}</span>
-                                </div>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <span style={{ fontWeight: 'bold', color: 'var(--text-secondary)' }}>(D)</span>
-                                    <span style={{ color: 'var(--text-muted)' }}>{q.option_d}</span>
-                                </div>
+                                {['A', 'B', 'C', 'D'].map((optKey) => {
+                                    const optionText = optKey === 'A' ? q.option_a : optKey === 'B' ? q.option_b : optKey === 'C' ? q.option_c : q.option_d;
+                                    const isSelected = selectedOpt === optKey;
+                                    const isCorrect = isExpanded && q.correct_option === optKey;
+                                    const isWrong = isExpanded && isSelected && q.correct_option !== optKey;
+
+                                    let borderColor = 'var(--border)';
+                                    let bgColor = 'var(--bg-card)';
+                                    let textColor = 'var(--text-muted)';
+                                    let icon = null;
+
+                                    if (isCorrect) {
+                                        borderColor = '#10b981'; // tailwind emerald-500
+                                        bgColor = 'rgba(16, 185, 129, 0.1)';
+                                        textColor = '#10b981';
+                                        icon = <CheckCircle size={18} color="#10b981" />;
+                                    } else if (isWrong) {
+                                        borderColor = '#ef4444'; // tailwind red-500
+                                        bgColor = 'rgba(239, 68, 68, 0.1)';
+                                        textColor = '#ef4444';
+                                        icon = <XCircle size={18} color="#ef4444" />;
+                                    } else if (isSelected) {
+                                        borderColor = 'var(--primary)';
+                                        bgColor = 'rgba(56, 189, 248, 0.1)'; // soft primary
+                                        textColor = 'var(--text-primary)';
+                                    }
+
+                                    return (
+                                        <button
+                                            key={optKey}
+                                            onClick={() => handleSelectOption(q.id, optKey)}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.75rem',
+                                                padding: '0.75rem 1rem',
+                                                border: `1px solid ${borderColor}`,
+                                                borderRadius: 'var(--radius-sm)',
+                                                background: bgColor,
+                                                cursor: isExpanded ? 'default' : 'pointer',
+                                                transition: 'all 0.2s ease',
+                                                textAlign: 'left'
+                                            }}
+                                            onMouseOver={(e) => {
+                                                if (!isExpanded && !isSelected) {
+                                                    e.currentTarget.style.borderColor = 'var(--primary)';
+                                                }
+                                            }}
+                                            onMouseOut={(e) => {
+                                                if (!isExpanded && !isSelected) {
+                                                    e.currentTarget.style.borderColor = borderColor;
+                                                }
+                                            }}
+                                        >
+                                            <span style={{ fontWeight: 'bold', color: isSelected || isCorrect || isWrong ? 'inherit' : 'var(--text-secondary)' }}>
+                                                ({optKey})
+                                            </span>
+                                            <span style={{ color: textColor, flex: 1 }}>{optionText}</span>
+                                            {icon}
+                                        </button>
+                                    );
+                                })}
                             </div>
 
                             <div style={{ marginLeft: '2.5rem' }}>
@@ -229,7 +294,7 @@ export default function Aptitude() {
                                     className="btn"
                                     style={{
                                         background: isExpanded ? 'rgba(16, 185, 129, 0.1)' : 'var(--bg-dark)',
-                                        color: isExpanded ? 'var(--success)' : 'var(--text-primary)',
+                                        color: isExpanded ? '#10b981' : 'var(--text-primary)',
                                         border: '1px solid var(--border)',
                                         fontSize: '0.9rem',
                                         padding: '0.5rem 1rem'
@@ -241,8 +306,14 @@ export default function Aptitude() {
 
                                 {isExpanded && (
                                     <div style={{ marginTop: '1rem', padding: '1.5rem', background: 'var(--bg-card-hover)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', animation: 'fadeIn 0.2s ease-out' }}>
-                                        <p style={{ marginBottom: '1rem', margin: 0 }}>
-                                            <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>Answer:</span> Option <span style={{ fontWeight: 'bold', color: 'var(--success)' }}>{q.correct_option}</span>
+                                        <p style={{ marginBottom: '1rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                            <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>Answer:</span> 
+                                            Option <span style={{ fontWeight: 'bold', color: '#10b981' }}>{q.correct_option}</span>
+                                            {selectedOpt && (
+                                                <span style={{ fontSize: '0.85rem', marginLeft: '0.5rem', padding: '0.2rem 0.5rem', borderRadius: '4px', background: selectedOpt === q.correct_option ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)', color: selectedOpt === q.correct_option ? '#10b981' : '#ef4444' }}>
+                                                    {selectedOpt === q.correct_option ? 'You got it right!' : 'Incorrect answer'}
+                                                </span>
+                                            )}
                                         </p>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1rem' }}>
                                             <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>Explanation:</span>

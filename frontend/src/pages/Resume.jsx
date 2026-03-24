@@ -209,6 +209,14 @@ export default function Resume() {
                                         >
                                             Start Mock Interview
                                         </button>
+                                        
+                                        {job.apply_link && (
+                                            <a href={job.apply_link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', width: '100%' }}>
+                                                <button className="btn outline" style={{ width: '100%', justifyContent: 'center', marginTop: '0.5rem' }}>
+                                                    Apply on {job.source || "Website"} ↗
+                                                </button>
+                                            </a>
+                                        )}
 
                                         {/* Course Recommendations */}
                                         {job.missing_skills && job.missing_skills.length > 0 && (

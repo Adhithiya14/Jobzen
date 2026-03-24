@@ -211,7 +211,13 @@ export default function Dashboard() {
                                         </div>
                                     )}
 
-                                    <button className="btn primary" style={{ marginTop: 'auto' }}>Apply Now</button>
+                                    {job.apply_link ? (
+                                        <a href={job.apply_link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', marginTop: 'auto' }}>
+                                            <button className="btn primary" style={{ width: '100%' }}>Apply directly on {job.source || "Website"}</button>
+                                        </a>
+                                    ) : (
+                                        <button className="btn primary" style={{ marginTop: 'auto' }}>Apply Now</button>
+                                    )}
                                 </div>
                             ))}
                         </div>
