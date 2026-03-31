@@ -238,7 +238,7 @@ export default function Dashboard() {
                                         <div><strong style={{ color: 'var(--text-primary)' }}>Platform:</strong> {course.platform}</div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Clock size={16} /> {course.duration} • {course.level}</div>
                                     </div>
-                                    <a href="#" style={{
+                                    <a href={course.url} target="_blank" rel="noopener noreferrer" style={{
                                         marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem',
                                         color: 'var(--accent)', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem'
                                     }}>

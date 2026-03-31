@@ -20,6 +20,7 @@ class Course(BaseModel):
     platform: str
     duration: str
     level: str
+    url: str = "https://www.coursera.org/"
 
 class RecommendationService:
     SKILL_RESOURCES = {
@@ -91,7 +92,8 @@ class RecommendationService:
                 match_score=min(99, base_score),
                 required_skills=[skill] + missing,
                 missing_skills=missing,
-                learn_more_links=links
+                learn_more_links=links,
+                apply_link=f"https://www.linkedin.com/jobs/search/?keywords={job_title.replace(' ', '%20')}"
             ))
 
         return jobs
@@ -138,9 +140,9 @@ class RecommendationService:
     def get_courses(self, role: str) -> List[Course]:
         # Mock Data
         return [
-            Course(id=1, title="Advanced FastAPI & Python", platform="Udemy", duration="12 hours", level="Advanced"),
-            Course(id=2, title="React - The Complete Guide", platform="Coursera", duration="40 hours", level="Intermediate"),
-            Course(id=3, title="System Design Interview", platform="YouTube", duration="5 hours", level="All Levels"),
+            Course(id=1, title="Advanced FastAPI & Python", platform="Udemy", duration="12 hours", level="Advanced", url="https://www.udemy.com/topic/fastapi/"),
+            Course(id=2, title="React - The Complete Guide", platform="Coursera", duration="40 hours", level="Intermediate", url="https://www.coursera.org/specializations/react"),
+            Course(id=3, title="System Design Interview", platform="YouTube", duration="5 hours", level="All Levels", url="https://www.youtube.com/results?search_query=system+design+interview"),
         ]
 
 recommendation_service = RecommendationService()
