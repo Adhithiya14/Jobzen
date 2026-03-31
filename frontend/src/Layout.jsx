@@ -29,8 +29,8 @@ export default function Layout() {
 
             <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
                 <div className="brand">
-                    <Zap size={28} fill="currentColor" />
-                    JobZen
+                    <div className="brand-dot"></div>
+                    <span>JobZen</span>
                 </div>
                 <nav>
                     <Link to="/" className={`nav-item ${location.pathname === '/' ? 'active' : ''}`}>

@@ -62,14 +62,27 @@ export default function Dashboard() {
 
     return (
         <div className="page-container">
-            <h1 style={{ marginBottom: '2rem' }}>Career Dashboard</h1>
+            <header style={{ marginBottom: '3rem' }}>
+                <h1>Career Dashboard</h1>
+                <p>Track your progress, explore roles, and bridge your skill gaps.</p>
+            </header>
 
             {!hasSkills && (
-                <div className="card" style={{ background: 'rgba(245, 158, 11, 0.1)', borderColor: 'var(--warning)', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                    <span style={{ fontSize: '1.5rem' }}>⚠️</span>
+                <div className="card" style={{ 
+                    background: 'rgba(245, 158, 11, 0.05)', 
+                    borderColor: 'rgba(245, 158, 11, 0.3)', 
+                    display: 'flex', 
+                    gap: '1.25rem', 
+                    alignItems: 'center',
+                    marginBottom: '2rem'
+                }}>
+                    <Zap size={24} color="var(--warning)" />
                     <div>
-                        <strong style={{ color: 'var(--warning)' }}>Resume Not Detected</strong>
-                        <div style={{ color: 'var(--text-secondary)' }}>Upload your resume in the <u>Resume Tab</u> to get personalized scoring and accurate gap analysis. Currently showing baseline requirements.</div>
+                        <strong style={{ color: 'var(--warning)', fontSize: '1.1rem' }}>Resume Not Detected</strong>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+                            Upload your resume in the <strong>Resume Tab</strong> to get personalized scoring. 
+                            Currently showing baseline requirements for Software Engineering.
+                        </div>
                     </div>
                 </div>
             )}
@@ -77,133 +90,99 @@ export default function Dashboard() {
             {loading ? (
                 <div className="grid">
                     <section className="col-span-full">
-                        <div className="skeleton" style={{ height: '100px', borderRadius: 'var(--radius-lg)' }}></div>
+                        <div className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-lg)' }}></div>
                     </section>
-                    <section>
-                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <div className="skeleton" style={{ width: '200px', height: '30px' }}></div>
-                        </h2>
-                        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
-                            {[1, 2].map(i => (
-                                <div key={i} className="card skeleton" style={{ height: '250px' }}></div>
-                            ))}
-                        </div>
-                    </section>
-                    <section>
-                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                            <div className="skeleton" style={{ width: '250px', height: '30px' }}></div>
-                        </h2>
-                        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
-                            {[1, 2].map(i => (
-                                <div key={i} className="card skeleton" style={{ height: '200px' }}></div>
-                            ))}
-                        </div>
-                    </section>
+                    {[1, 2, 3, 4].map(i => (
+                        <div key={i} className="card skeleton" style={{ height: '280px' }}></div>
+                    ))}
                 </div>
             ) : error ? (
-                <div className="error-box" style={{ padding: '1rem', background: 'var(--danger)', color: 'white', borderRadius: 'var(--radius-sm)' }}>{error}</div>
+                <div className="card" style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', textAlign: 'center' }}>{error}</div>
             ) : (
-                <div className="grid">
+                <div className="grid" style={{ gap: '2.5rem' }}>
 
                     {/* Progress Section */}
                     {history.length > 0 && (
                         <section className="col-span-full">
-                            <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <Briefcase size={24} className="accent-icon" color="var(--accent)" /> My Progress
+                            <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                                <RefreshCw size={22} color="var(--accent)" /> Performance Analytics
                             </h2>
-                            <div className="card flex-between" style={{ flexWrap: 'wrap', gap: '2rem' }}>
-                                <div>
-                                    <div className="text-sm text-muted">Interviews Taken</div>
-                                    <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{history.length}</div>
+                            <div className="card" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', alignItems: 'center' }}>
+                                <div style={{ textAlign: 'center' }}>
+                                    <div className="text-sm text-muted" style={{ marginBottom: '0.5rem' }}>Mock Interviews</div>
+                                    <div style={{ fontSize: '2.5rem', fontWeight: '800', background: 'linear-gradient(to bottom, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{history.length}</div>
                                 </div>
-                                <div style={{ width: '1px', height: '50px', background: 'var(--border)' }}></div>
-                                <div>
-                                    <div className="text-sm text-muted">Average Score</div>
-                                    <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--accent)' }}>
-                                        {Math.round(history.reduce((acc, curr) => acc + curr.score, 0) / history.length)}/10
+                                <div style={{ textAlign: 'center', borderLeft: '1px solid var(--glass-border)', borderRight: '1px solid var(--glass-border)' }}>
+                                    <div className="text-sm text-muted" style={{ marginBottom: '0.5rem' }}>Average Readiness</div>
+                                    <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--accent)' }}>
+                                        {Math.round(history.reduce((acc, curr) => acc + curr.score, 0) / history.length * 10)}%
                                     </div>
                                 </div>
-                                <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem' }}>
-                                    {history.slice(0, 5).map((h, i) => (
-                                        <div key={i} title={h.created_at} style={{
-                                            width: '32px', height: '32px', borderRadius: '50%',
-                                            background: h.score >= 7 ? 'var(--success)' : 'var(--warning)',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            color: 'white', fontSize: '0.8rem', fontWeight: 'bold'
-                                        }}>
-                                            {h.score}
-                                        </div>
-                                    ))}
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+                                    <div className="text-sm text-muted">Recent Performance</div>
+                                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                                        {history.slice(0, 5).map((h, i) => (
+                                            <div key={i} title={h.created_at} style={{
+                                                width: '40px', height: '40px', borderRadius: '12px',
+                                                background: h.score >= 7 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                                                border: `1px solid ${h.score >= 7 ? 'var(--success)' : 'var(--warning)'}`,
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                color: h.score >= 7 ? 'var(--success)' : 'var(--warning)', 
+                                                fontSize: '1rem', fontWeight: '800',
+                                                boxShadow: h.score >= 7 ? '0 0 10px rgba(16, 185, 129, 0.2)' : 'none'
+                                            }}>
+                                                {h.score}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </section>
                     )}
 
                     {/* Job Recommendations Section */}
-                    <section>
-                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <Briefcase size={24} color="var(--accent)" /> Recommended Jobs
+                    <section className="col-span-full">
+                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                            <Briefcase size={22} color="var(--primary)" /> Recommended Career Paths
                         </h2>
-                        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+                        <div className="grid">
                             {jobs.map(job => (
-                                <div key={job.id} className="card flex-col gap-md">
+                                <div key={job.id} className="card flex-col" style={{ gap: '1.5rem' }}>
                                     <div className="flex-between" style={{ alignItems: 'flex-start' }}>
-                                        <div>
-                                            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>{job.title}</h3>
-                                            <p className="text-sm text-muted">{job.company} • {job.location}</p>
+                                        <div style={{ flex: 1 }}>
+                                            <h3 style={{ fontSize: '1.35rem', color: '#fff', marginBottom: '0.35rem' }}>{job.title}</h3>
+                                            <p className="text-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                <span style={{ color: 'var(--accent)' }}>{job.company}</span>
+                                                <span style={{ color: 'var(--text-muted)' }}>•</span>
+                                                <span style={{ color: 'var(--text-secondary)' }}>{job.location}</span>
+                                            </p>
                                         </div>
-                                        <span className={`badge ${job.match_score >= 80 ? 'success' : job.match_score >= 50 ? 'warning' : 'danger'}`}>
+                                        <div className={`badge ${job.match_score >= 80 ? 'success' : 'warning'}`} style={{ fontSize: '0.7rem', padding: '0.4rem 0.8rem' }}>
                                             {job.match_score}% Match
-                                        </span>
-                                    </div>
-
-                                    <div className="text-sm" style={{ color: 'var(--text-primary)' }}>
-                                        <strong>Salary:</strong> {job.salary}
-                                    </div>
-
-                                    {/* Eligibility Check */}
-                                    <div style={{
-                                        padding: '0.75rem', borderRadius: 'var(--radius-sm)',
-                                        background: job.match_score >= 80 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-                                        border: `1px solid ${job.match_score >= 80 ? 'var(--success)' : 'var(--warning)'}`
-                                    }}>
-                                        <div style={{ fontWeight: 'bold', color: job.match_score >= 80 ? 'var(--success)' : 'var(--warning)', marginBottom: '0.5rem' }}>
-                                            {job.match_score >= 80 ? "✅ You are Eligible!" : "⚠️ Skill Gaps Detected"}
                                         </div>
-
-                                        {job.missing_skills && job.missing_skills.length > 0 && (
-                                            <div className="text-sm">
-                                                <span className="text-muted">Missing: </span>
-                                                {job.missing_skills.join(", ")}
-                                            </div>
-                                        )}
                                     </div>
 
-                                    {/* Course Links */}
-                                    {job.learn_more_links && job.learn_more_links.length > 0 && (
-                                        <div>
-                                            <p className="text-sm" style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Recommended Courses:</p>
+                                    <div style={{ display: 'flex', gap: '1rem' }}>
+                                        <div className="text-sm" style={{ padding: '0.6rem 1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: '1px solid var(--glass-border)', flex: 1 }}>
+                                            <div className="text-muted" style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Package</div>
+                                            <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>{job.salary}</div>
+                                        </div>
+                                        <div className="text-sm" style={{ padding: '0.6rem 1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: '1px solid var(--glass-border)', flex: 1 }}>
+                                            <div className="text-muted" style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Status</div>
+                                            <div style={{ fontWeight: '600', color: job.match_score >= 80 ? 'var(--success)' : 'var(--warning)' }}>
+                                                {job.match_score >= 80 ? "Eligible" : "Skills Needed"}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {job.missing_skills?.length > 0 && (
+                                        <div style={{ padding: '1rem', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.03)', border: '1px solid rgba(245, 158, 11, 0.15)' }}>
+                                            <div className="text-muted" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', fontWeight: '600' }}>UPSKILLING PATH:</div>
                                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                                                {job.learn_more_links.map((link, idx) => (
-                                                    <a
-                                                        key={idx}
-                                                        href={link.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        style={{
-                                                            textDecoration: 'none',
-                                                            background: 'rgba(99, 102, 241, 0.1)',
-                                                            color: 'var(--primary)',
-                                                            border: '1px solid var(--primary)',
-                                                            padding: '0.3rem 0.6rem',
-                                                            borderRadius: 'var(--radius-sm)',
-                                                            fontSize: '0.75rem',
-                                                            display: 'inline-flex',
-                                                            alignItems: 'center',
-                                                            gap: '0.3rem',
-                                                            transition: 'all 0.2s'
-                                                        }}
-                                                    >
+                                                {job.learn_more_links?.map((link, idx) => (
+                                                    <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer" className="nav-item" style={{ 
+                                                        margin: 0, padding: '0.4rem 0.8rem', fontSize: '0.75rem', background: 'rgba(139, 92, 246, 0.1)', color: 'var(--primary)', border: '1px solid rgba(139, 92, 246, 0.2)' 
+                                                    }}>
                                                         Learn {link.skill} ↗
                                                     </a>
                                                 ))}
@@ -211,14 +190,8 @@ export default function Dashboard() {
                                         </div>
                                     )}
 
-                                    <a 
-                                        href={job.apply_link || "#"} 
-                                        target={job.apply_link ? "_blank" : "_self"} 
-                                        rel="noopener noreferrer" 
-                                        className="btn primary" 
-                                        style={{ marginTop: 'auto', textDecoration: 'none', textAlign: 'center', width: '100%', display: 'inline-block' }}
-                                    >
-                                        {job.apply_link ? `Apply on ${job.source || "Website"}` : "Apply Now"}
+                                    <a href={job.apply_link || "#"} target="_blank" rel="noopener noreferrer" className="btn primary" style={{ width: '100%', borderRadius: '12px' }}>
+                                        {job.apply_link ? `Apply via ${job.source}` : "Apply Directly"}
                                     </a>
                                 </div>
                             ))}
@@ -226,31 +199,35 @@ export default function Dashboard() {
                     </section>
 
                     {/* Course Recommendations Section */}
-                    <section>
-                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--accent)' }}>
-                            <BookOpen /> Recommended Courses
+                    <section className="col-span-full">
+                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                            <BookOpen size={22} color="var(--accent)" /> Learning Path
                         </h2>
-                        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+                        <div className="grid">
                             {courses.map(course => (
-                                <div key={course.id} className="card flex-col gap-md">
-                                    <h3 style={{ fontSize: '1.1rem', lineHeight: '1.4' }}>{course.title}</h3>
-                                    <div className="flex-col gap-sm text-sm text-muted">
-                                        <div><strong style={{ color: 'var(--text-primary)' }}>Platform:</strong> {course.platform}</div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Clock size={16} /> {course.duration} • {course.level}</div>
+                                <div key={course.id} className="card flex-col" style={{ gap: '1.25rem' }}>
+                                    <div style={{ height: '4px', width: '40px', background: 'var(--accent)', borderRadius: '2px' }}></div>
+                                    <h3 style={{ fontSize: '1.2rem', lineHeight: '1.4', color: '#fff' }}>{course.title}</h3>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="text-sm">
+                                        <span style={{ color: 'var(--text-secondary)' }}>{course.platform}</span>
+                                        <span style={{ padding: '0.2rem 0.6rem', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', color: 'var(--accent)', fontWeight: '600' }}>{course.level}</span>
                                     </div>
-                                    <a href={course.url} target="_blank" rel="noopener noreferrer" style={{
-                                        marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem',
-                                        color: 'var(--accent)', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem'
-                                    }}>
-                                        Start Learning <ExternalLink size={14} />
-                                    </a>
+                                    <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div className="text-muted" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                            <Clock size={14} /> {course.duration}
+                                        </div>
+                                        <a href={course.url} target="_blank" rel="noopener noreferrer" style={{
+                                            color: 'var(--text-primary)', textDecoration: 'none', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.4rem'
+                                        }}>
+                                            Explore <ExternalLink size={14} color="var(--accent)" />
+                                        </a>
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     </section>
                 </div>
-            )
-            }
-        </div >
+            )}
+        </div>
     );
 }

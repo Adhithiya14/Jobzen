@@ -80,20 +80,51 @@ export default function Chat() {
     };
 
     return (
-        <div className="chat-container">
+        <div className="chat-container" style={{ background: 'transparent' }}>
             <div
                 className="chat-history"
                 ref={chatContainerRef}
                 onScroll={handleScroll}
+                style={{ paddingTop: '5rem', paddingBottom: '2rem' }}
             >
-                {messages.map((msg, idx) => (
-                    <div key={idx} className={`message ${msg.role}`}>
-                        <div className="avatar">
-                            {msg.role === 'bot' ? <Bot size={20} /> : <User size={20} />}
+                <div style={{ maxWidth: '800px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    {messages.map((msg, idx) => (
+                        <div key={idx} className={`message ${msg.role}`} style={{ 
+                            alignSelf: msg.role === 'bot' ? 'flex-start' : 'flex-end',
+                            flexDirection: msg.role === 'bot' ? 'row' : 'row-reverse',
+                            maxWidth: '85%'
+                        }}>
+                            <div className="avatar" style={{ 
+                                background: msg.role === 'bot' ? 'rgba(139, 92, 246, 0.1)' : 'var(--primary)',
+                                color: msg.role === 'bot' ? 'var(--primary)' : 'white',
+                                border: msg.role === 'bot' ? '1px solid rgba(139, 92, 246, 0.2)' : 'none',
+                                boxShadow: msg.role === 'user' ? '0 4px 12px var(--primary-glow)' : 'none'
+                            }}>
+                                {msg.role === 'bot' ? <Bot size={18} /> : <User size={18} />}
+                            </div>
+                            <div className="bubble" style={{ 
+                                background: msg.role === 'bot' ? 'var(--bg-card)' : 'linear-gradient(135deg, var(--primary), var(--primary-hover))',
+                                color: msg.role === 'bot' ? 'var(--text-primary)' : 'white',
+                                borderRadius: '18px',
+                                borderTopLeftRadius: msg.role === 'bot' ? '4px' : '18px',
+                                borderTopRightRadius: msg.role === 'user' ? '4px' : '18px',
+                                boxShadow: 'var(--shadow-lg)',
+                                border: msg.role === 'bot' ? '1px solid var(--glass-border)' : 'none',
+                                padding: '1.25rem 1.5rem',
+                                fontSize: '1.05rem',
+                                lineHeight: '1.6'
+                            }}>
+                                {msg.text || (
+                                    <div style={{ display: 'flex', gap: '4px', padding: '4px 0' }}>
+                                        <div className="spin" style={{ width: '8px', height: '8px', background: 'var(--text-secondary)', borderRadius: '50%', animation: 'pulse 1.5s infinite' }}></div>
+                                        <div className="spin" style={{ width: '8px', height: '8px', background: 'var(--text-secondary)', borderRadius: '50%', animation: 'pulse 1.5s infinite 0.2s' }}></div>
+                                        <div className="spin" style={{ width: '8px', height: '8px', background: 'var(--text-secondary)', borderRadius: '50%', animation: 'pulse 1.5s infinite 0.4s' }}></div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        <div className="bubble">{msg.text}</div>
-                    </div>
-                ))}
+                    ))}
+                </div>
                 <div ref={messagesEndRef} />
             </div>
 
@@ -101,32 +132,37 @@ export default function Chat() {
             {showScrollBtn && (
                 <button
                     onClick={scrollToBottom}
+                    className="icon-btn primary"
                     style={{
                         position: 'absolute',
-                        bottom: '100px',
+                        bottom: '120px',
                         left: '50%',
                         transform: 'translateX(-50%)',
-                        background: 'var(--primary)',
-                        color: 'white',
-                        border: 'none',
+                        width: '44px',
+                        height: '44px',
                         borderRadius: '50%',
-                        width: '40px',
-                        height: '40px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                        zIndex: 10,
-                        animation: 'fadeIn 0.2s'
+                        boxShadow: '0 8px 16px rgba(0,0,0,0.4)',
+                        zIndex: 100,
+                        backgroundColor: 'var(--primary)'
                     }}
                 >
-                    <ArrowDown size={20} />
+                    <ArrowDown size={22} />
                 </button>
             )}
 
-            <div className="chat-input-area">
-                <button className="icon-btn" title="Upload Resume">
+            <div className="chat-input-area" style={{ 
+                maxWidth: '800px', 
+                margin: '2rem auto', 
+                width: 'calc(100% - 4rem)',
+                borderRadius: '24px',
+                border: '1px solid var(--glass-border)',
+                background: 'rgba(15, 23, 42, 0.8)',
+                backdropFilter: 'blur(16px)',
+                padding: '0.75rem 1rem',
+                position: 'relative',
+                boxShadow: '0 10px 40px -10px rgba(0,0,0,0.5)'
+            }}>
+                <button className="icon-btn" style={{ color: 'var(--text-muted)' }}>
                     <Paperclip size={20} />
                 </button>
                 <input
@@ -134,9 +170,26 @@ export default function Chat() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                    placeholder="Type your message..."
+                    placeholder="Ask JobZen anything..."
+                    style={{ 
+                        background: 'transparent', 
+                        border: 'none', 
+                        boxShadow: 'none',
+                        fontSize: '1.1rem',
+                        padding: '0.75rem'
+                    }}
                 />
-                <button className="icon-btn primary" onClick={handleSend}>
+                <button 
+                    className="icon-btn" 
+                    onClick={handleSend}
+                    style={{ 
+                        background: input.trim() ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
+                        color: input.trim() ? 'white' : 'var(--text-muted)',
+                        borderRadius: '16px',
+                        padding: '0.75rem',
+                        transition: 'all 0.3s'
+                    }}
+                >
                     <Send size={20} />
                 </button>
             </div>

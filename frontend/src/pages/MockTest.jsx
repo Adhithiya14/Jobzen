@@ -277,27 +277,69 @@ export default function MockTest() {
 
             {/* Setup Screen */}
             {step === 'setup' && (
-                <div style={{ maxWidth: '600px', margin: '0 auto', width: '100%', flex: 1, display: 'flex', alignItems: 'center', padding: '2rem 0' }}>
-                    <div className="card" style={{ background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(16, 185, 129, 0.05))', border: '1px solid rgba(99, 102, 241, 0.2)', padding: '3rem', textAlign: 'center', width: '100%' }}>
-                        <div style={{ padding: '1.5rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '50%', color: 'var(--primary)', width: 'fit-content', margin: '0 auto 1.5rem' }}>
-                            <Video size={40} />
+                <div style={{ maxWidth: '800px', margin: 'auto', width: '100%', padding: '4rem 1rem', animation: 'fadeIn 0.8s ease-out' }}>
+                    <div className="card" style={{ 
+                        background: 'var(--glass-bg)', 
+                        backdropFilter: 'blur(12px)',
+                        border: '1px solid var(--glass-border)', 
+                        padding: '4rem', 
+                        textAlign: 'center', 
+                        borderRadius: '32px',
+                        boxShadow: '0 40px 100px -20px rgba(0,0,0,0.5)'
+                    }}>
+                        <div style={{ 
+                            padding: '2rem', 
+                            background: 'rgba(139, 92, 246, 0.08)', 
+                            borderRadius: '24px', 
+                            color: 'var(--primary)', 
+                            width: 'fit-content', 
+                            margin: '0 auto 2.5rem',
+                            border: '1px solid rgba(139, 92, 246, 0.2)',
+                            boxShadow: '0 0 30px var(--primary-glow)'
+                        }}>
+                            <Video size={48} />
                         </div>
-                        <h2 style={{ marginTop: 0, color: 'var(--primary)', fontSize: '2rem', marginBottom: '1rem' }}>AI Video Interview</h2>
-                        <p style={{ fontSize: '1.1rem', marginBottom: '2rem' }}>Experience a realistic, multi-round interview environment with AI voice and real-time webcam feedback.</p>
+                        <h1 style={{ fontSize: '3rem', marginBottom: '1.25rem', color: '#fff', fontWeight: '800', letterSpacing: '-0.02em' }}>
+                            Next-Gen <span style={{ color: 'var(--primary)' }}>AI Interviewer</span>
+                        </h1>
+                        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginBottom: '3rem', lineHeight: '1.6' }}>
+                            Experience a high-fidelity, industrial-grade simulation with real-time AI feedback and professional scoring.
+                        </p>
 
-                        <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
-                            <label style={{ display: 'block', margin: '0 0 0.5rem', fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>CUSTOM ROLE</label>
+                        <div style={{ textAlign: 'left', marginBottom: '3rem', maxWidth: '400px', margin: '0 auto 3rem' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', fontWeight: '700', fontSize: '0.75rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                                <Briefcase size={14} /> Target Career Role
+                            </label>
                             <input
                                 type="text"
                                 value={role}
                                 onChange={(e) => setRole(e.target.value)}
-                                placeholder="e.g. Frontend Developer"
-                                style={{ marginBottom: '0.5rem' }}
+                                placeholder="e.g. Senior Frontend Engineer"
+                                style={{ 
+                                    padding: '1.25rem', 
+                                    borderRadius: '16px', 
+                                    fontSize: '1.1rem',
+                                    background: 'rgba(255,255,255,0.03)',
+                                    border: '1px solid var(--glass-border)'
+                                }}
                             />
                         </div>
 
-                        <button onClick={startFullInterview} className="btn primary" style={{ width: '100%', justifyContent: 'center', padding: '1rem', fontSize: '1.1rem' }}>
-                            <Camera size={22} /> Start Full Simulation
+                        <button 
+                            onClick={startFullInterview} 
+                            className="btn primary" 
+                            style={{ 
+                                margin: '0 auto',
+                                width: 'fit-content', 
+                                padding: '1.25rem 3.5rem', 
+                                fontSize: '1.2rem', 
+                                borderRadius: '18px',
+                                textTransform: 'uppercase',
+                                fontWeight: '800',
+                                letterSpacing: '0.05em'
+                            }}
+                        >
+                            <Camera size={24} /> Enter Session
                         </button>
                     </div>
                 </div>
@@ -305,196 +347,362 @@ export default function MockTest() {
 
             {/* Main Video Interface */}
             {(step === 'interview' || step === 'feedback' || step === 'round-intro' || step === 'complete') && (
-                <div style={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100%', animation: 'fadeIn 0.5s ease' }}>
                     {interviewMode === 'full' && (
-                        <div style={{ display: 'flex', gap: '1rem', padding: '1rem 2rem', background: 'var(--bg-dark)', borderBottom: '1px solid var(--border)', justifyContent: 'center' }}>
+                        <div style={{ 
+                            display: 'flex', 
+                            gap: '1rem', 
+                            padding: '1rem 2.5rem', 
+                            background: 'rgba(15, 23, 42, 0.4)', 
+                            backdropFilter: 'blur(10px)',
+                            borderBottom: '1px solid var(--glass-border)', 
+                            justifyContent: 'center',
+                            zIndex: 10
+                        }}>
                             {[1, 2, 3].map((roundNum) => (
                                 <button
                                     key={roundNum}
                                     onClick={() => step !== 'setup' ? switchRound(roundNum) : null}
-                                    className={`btn ${currentRound === roundNum ? 'primary' : 'outline'}`}
-                                    style={{ flex: 1, maxWidth: '250px', justifyContent: 'center', transition: 'all 0.2s ease' }}
+                                    className={`nav-item ${currentRound === roundNum ? 'active' : ''}`}
+                                    style={{ 
+                                        flex: 1, 
+                                        maxWidth: '240px', 
+                                        justifyContent: 'center', 
+                                        margin: 0,
+                                        padding: '0.75rem 1.25rem',
+                                        fontSize: '0.85rem'
+                                    }}
                                 >
-                                    Round {roundNum}: {ROUNDS[roundNum].name}
+                                    R{roundNum}: {ROUNDS[roundNum].name}
                                 </button>
                             ))}
                         </div>
                     )}
                     
-                    <div className="interview-layout">
+                    <div className="interview-layout" style={{ flex: 1, padding: '2rem', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '2rem' }}>
                         {/* Left: Video Feed & Questions */}
-                        <div className="video-frame">
-                        <video
-                            ref={videoRef}
-                            autoPlay
-                            muted
-                            playsInline
-                            className="video-feed"
-                        />
+                        <div className="video-frame" style={{ 
+                            position: 'relative', 
+                            borderRadius: '32px', 
+                            overflow: 'hidden', 
+                            background: '#000',
+                            boxShadow: '0 50px 100px -30px rgba(0,0,0,0.6)',
+                            border: '1px solid var(--glass-border)',
+                            height: 'fit-content',
+                            aspectRatio: '16/10'
+                        }}>
+                            <video
+                                ref={videoRef}
+                                autoPlay
+                                muted
+                                playsInline
+                                className="video-feed"
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }}
+                            />
 
-                        {/* Status Badge */}
-                        <div className="rec-badge">
-                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'white', boxShadow: '0 0 8px red' }}></div>
-                            <span>REC</span>
-                        </div>
-
-                        {/* Overlay: AI Question */}
-                        {step === 'interview' && questionData && (
-                            <div className="question-overlay">
-                                <div className="ai-status" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <Video size={16} /> AI INTERVIEWER {isAiSpeaking && <Volume2 size={16} className="pulse" />}
-                                    </div>
-                                    <div className="badge" style={{ fontSize: '0.7rem', background: 'rgba(99, 102, 241, 0.2)', color: 'var(--primary)', border: '1px solid rgba(99, 102, 241, 0.3)' }}>
-                                        {difficulty.toUpperCase()}
-                                    </div>
-                                </div>
-                                <h3 className="question-text">{questionData.question}</h3>
-                                {questionData.hint && (
-                                    <div style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '0.5rem', borderLeft: '3px solid var(--accent)', fontSize: '0.9rem', color: 'var(--text-secondary)', animation: 'fadeIn 0.5s ease-out' }}>
-                                        <span style={{ fontWeight: 'bold', color: 'var(--accent)', marginRight: '0.5rem' }}>HINT:</span>
-                                        {questionData.hint}
-                                    </div>
-                                )}
+                            {/* Status Badge */}
+                            <div className="rec-badge" style={{ 
+                                position: 'absolute', 
+                                top: '1.5rem', 
+                                right: '1.5rem', 
+                                background: 'rgba(239, 68, 68, 0.15)', 
+                                padding: '0.6rem 1rem', 
+                                borderRadius: '12px', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '0.6rem',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
+                                backdropFilter: 'blur(8px)'
+                            }}>
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444', animation: 'pulse-animation 1s infinite' }}></div>
+                                <span style={{ color: '#ef4444', fontWeight: '800', fontSize: '0.75rem', letterSpacing: '0.1em' }}>LIVE SESSION</span>
                             </div>
-                        )}
 
-                        {/* Round Intro Overlay */}
-                        {step === 'round-intro' && (
-                            <div style={{ position: 'absolute', inset: 0, background: 'rgba(11, 15, 21, 0.9)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 20 }}>
-                                <h1 style={{ fontSize: '4rem', color: 'var(--primary)', marginBottom: '0.5rem' }}>Round {currentRound}</h1>
-                                <h2 style={{ color: 'var(--text-secondary)' }}>{ROUNDS[currentRound].name}</h2>
-                                <button onClick={fetchQuestion} className="btn primary" style={{ marginTop: '2rem', padding: '1rem 3rem', fontSize: '1.1rem' }}>
-                                    Begin Round
-                                </button>
-                            </div>
-                        )}
-
-                        {/* Feedback Overlay */}
-                        {step === 'feedback' && feedback && (
-                            <div style={{ position: 'absolute', inset: 0, background: 'rgba(11, 15, 21, 0.95)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center', zIndex: 50 }}>
-                                <div style={{ fontSize: '4rem', fontWeight: 'bold', color: feedback.score > 7 ? 'var(--success)' : 'var(--warning)', marginBottom: '0.5rem' }}>
-                                    {feedback.score}/10
-                                </div>
-                                <h3 style={{ margin: '0 0 1rem', color: 'white' }}>Feedback</h3>
-                                <p style={{ fontSize: '1.1rem', maxWidth: '600px', lineHeight: 1.6, marginBottom: '2rem', color: 'var(--text-secondary)' }}>{feedback.feedback}</p>
-
-                                {feedback.correct_answer_summary && (
-                                    <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '1rem', borderRadius: '0.5rem', maxWidth: '600px', marginBottom: '1.5rem' }}>
-                                        <div style={{ color: 'var(--success)', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.9rem' }}>✅ CORRECT ANSWER / IDEAL RESPONSE</div>
-                                        <p style={{ margin: 0, fontSize: '1rem', color: '#d1fae5' }}>{feedback.correct_answer_summary}</p>
+                            {/* Overlay: AI Question */}
+                            {step === 'interview' && questionData && (
+                                <div className="question-overlay" style={{ 
+                                    position: 'absolute', 
+                                    bottom: '1.5rem', 
+                                    left: '1.5rem', 
+                                    right: '1.5rem', 
+                                    background: 'rgba(15, 23, 42, 0.6)', 
+                                    backdropFilter: 'blur(20px)',
+                                    border: '1px solid var(--glass-border)',
+                                    borderRadius: '24px',
+                                    padding: '2rem',
+                                    animation: 'slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
+                                }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--primary)' }}>
+                                            <div className="brand-dot"></div>
+                                            <span style={{ fontWeight: '800', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>AI Interviewer</span>
+                                            {isAiSpeaking && <Volume2 size={16} className="pulse" />}
+                                        </div>
+                                        <div className="badge warning" style={{ padding: '0.25rem 0.75rem', fontSize: '0.65rem' }}>
+                                            {difficulty.toUpperCase()}
+                                        </div>
                                     </div>
-                                )}
-
-                                <button
-                                    onClick={nextQuestion}
-                                    className="btn primary"
-                                    style={{ padding: '1rem 3rem' }}
-                                    disabled={loading}
-                                >
-                                    {loading ? (
-                                        <>
-                                            <RefreshCw className="spin" size={20} /> Generating...
-                                        </>
-                                    ) : (
-                                        <>
-                                            Next Question <Play size={20} />
-                                        </>
+                                    <h3 style={{ margin: 0, fontSize: '1.4rem', color: '#fff', lineHeight: '1.5', fontWeight: '500' }}>
+                                        "{questionData.question}"
+                                    </h3>
+                                    {questionData.hint && (
+                                        <div style={{ 
+                                            marginTop: '1.25rem', 
+                                            padding: '0.75rem 1rem', 
+                                            background: 'rgba(255, 255, 255, 0.03)', 
+                                            borderRadius: '12px', 
+                                            border: '1px solid rgba(255, 255, 255, 0.05)',
+                                            fontSize: '0.85rem', 
+                                            color: 'var(--text-secondary)', 
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.5rem'
+                                        }}>
+                                            <span style={{ color: 'var(--primary)', fontWeight: '700' }}>HINT:</span> {questionData.hint}
+                                        </div>
                                     )}
-                                </button>
-                            </div>
-                        )}
-                        {/* Complete Overlay for Round */}
-                        {step === 'complete' && (
-                            <div style={{ position: 'absolute', inset: 0, background: 'rgba(11, 15, 21, 0.95)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center', zIndex: 50 }}>
-                                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>✅</div>
-                                <h1 style={{ fontSize: '3rem', color: 'var(--primary)', marginBottom: '1rem' }}>Round Complete</h1>
-                                <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', marginBottom: '2rem' }}>You've finished all 10 questions for Round {currentRound}. Pick another round from the tabs above, or return to dashboard.</p>
-                                
-                                <button
-                                    onClick={() => {stopCamera(); setStep('setup');}}
-                                    className="btn outline"
-                                    style={{ padding: '1rem 3rem' }}
-                                >
-                                    End Interview & Return
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                                </div>
+                            )}
 
-                    {/* Right: Controls & Transcript */}
-                    <div className="control-panel">
-                        <div className="answer-card" style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 140px)' }}>
-                            {step === 'feedback' && feedback ? (
-                                /* --- Feedback / Result Mode --- */
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', height: '100%' }}>
-                                    <div className="answer-card-header">
-                                        <h3>Performance Result</h3>
-                                        <div className="badge" style={{ background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)' }}>
-                                            COMPLETED
+                            {/* Round Intro Overlay */}
+                            {step === 'round-intro' && (
+                                <div style={{ 
+                                    position: 'absolute', 
+                                    inset: 0, 
+                                    background: 'rgba(11, 15, 21, 0.9)', 
+                                    backdropFilter: 'blur(10px)',
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    alignItems: 'center', 
+                                    justifyContent: 'center', 
+                                    zIndex: 20,
+                                    padding: '2rem',
+                                    textAlign: 'center'
+                                }}>
+                                    <div style={{ 
+                                        padding: '1rem 2rem', 
+                                        borderRadius: '100px', 
+                                        background: 'rgba(139, 92, 246, 0.1)', 
+                                        color: 'var(--primary)', 
+                                        fontWeight: '800', 
+                                        fontSize: '0.8rem', 
+                                        textTransform: 'uppercase', 
+                                        marginBottom: '1rem',
+                                        border: '1px solid rgba(139, 92, 246, 0.2)'
+                                    }}>
+                                        Round {currentRound} of 3
+                                    </div>
+                                    <h2 style={{ fontSize: '3.5rem', color: '#fff', marginBottom: '1rem', fontWeight: '800' }}>{ROUNDS[currentRound].name}</h2>
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', maxWidth: '500px', marginBottom: '2.5rem' }}>
+                                        Prepare yourself for the {ROUNDS[currentRound].type} assessment phase.
+                                    </p>
+                                    <button onClick={fetchQuestion} className="btn primary" style={{ padding: '1rem 3.5rem', fontSize: '1.2rem', borderRadius: '16px' }}>
+                                        Begin Assessment
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Feedback Overlay */}
+                            {step === 'feedback' && feedback && (
+                                <div style={{ 
+                                    position: 'absolute', 
+                                    inset: 0, 
+                                    background: 'rgba(11, 15, 21, 0.95)', 
+                                    backdropFilter: 'blur(20px)',
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    alignItems: 'center', 
+                                    justifyContent: 'center', 
+                                    padding: '3rem', 
+                                    textAlign: 'center', 
+                                    zIndex: 50 
+                                }}>
+                                    <div style={{ 
+                                        width: '120px',
+                                        height: '120px',
+                                        borderRadius: '50%',
+                                        background: feedback.score > 7 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                                        border: `2px solid ${feedback.score > 7 ? 'var(--success)' : 'var(--warning)'}`,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        marginBottom: '1.5rem',
+                                        boxShadow: feedback.score > 7 ? '0 0 40px rgba(16, 185, 129, 0.2)' : '0 0 40px rgba(245, 158, 11, 0.2)'
+                                    }}>
+                                        <div style={{ fontSize: '3rem', fontWeight: '900', color: feedback.score > 7 ? 'var(--success)' : 'var(--warning)' }}>
+                                            {feedback.score}
                                         </div>
+                                        <div style={{ fontSize: '0.7rem', fontWeight: '800', opacity: 0.6 }}>SCORE</div>
                                     </div>
-
-                                    <div style={{ textAlign: 'center', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '1rem' }}>
-                                        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>SCORE</div>
-                                        <div style={{ fontSize: '3.5rem', fontWeight: '800', lineHeight: 1, color: feedback.score > 7 ? 'var(--success)' : 'var(--warning)' }}>
-                                            {feedback.score}<span style={{ fontSize: '1.5rem', color: 'var(--text-muted)' }}>/10</span>
-                                        </div>
-                                    </div>
-
-                                    <div style={{ flex: 1, overflowY: 'auto', paddingRight: '0.5rem' }}>
-                                        <h4 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Analysis</h4>
-                                        <p style={{ lineHeight: '1.6', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                                            {feedback.feedback}
-                                        </p>
-
-                                        {feedback.correct_answer_summary && (
-                                            <div style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.15)', padding: '1rem', borderRadius: '0.5rem' }}>
-                                                <div style={{ color: 'var(--success)', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                    <Award size={16} /> IDEAL APPROACH
-                                                </div>
-                                                <p style={{ margin: 0, fontSize: '0.95rem', color: '#d1fae5', lineHeight: 1.5 }}>
-                                                    {feedback.correct_answer_summary}
-                                                </p>
-                                            </div>
-                                        )}
-                                    </div>
+                                    
+                                    <h3 style={{ margin: '0 0 1rem', color: '#fff', fontSize: '1.8rem' }}>Performance Review</h3>
+                                    <p style={{ fontSize: '1.1rem', maxWidth: '600px', lineHeight: 1.6, marginBottom: '2.5rem', color: 'var(--text-secondary)' }}>
+                                        {feedback.feedback.split('.')[0]}. {feedback.feedback.split('.')[1]}.
+                                    </p>
 
                                     <button
                                         onClick={nextQuestion}
                                         className="btn primary"
-                                        style={{ justifyContent: 'center', padding: '1rem', fontSize: '1.1rem', marginTop: 'auto' }}
+                                        style={{ padding: '1rem 4rem', fontSize: '1.1rem', borderRadius: '16px' }}
                                         disabled={loading}
                                     >
-                                        {loading ? <RefreshCw className="spin" size={20} /> : <Play size={20} />} Next Question
+                                        {loading ? <RefreshCw className="spin" size={20} /> : <>Next Question <Play size={20} /></>}
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Complete Overlay for Round */}
+                            {step === 'complete' && (
+                                <div style={{ 
+                                    position: 'absolute', 
+                                    inset: 0, 
+                                    background: 'rgba(11, 15, 21, 0.95)', 
+                                    backdropFilter: 'blur(20px)',
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    alignItems: 'center', 
+                                    justifyContent: 'center', 
+                                    padding: '3rem', 
+                                    textAlign: 'center', 
+                                    zIndex: 50 
+                                }}>
+                                    <div style={{ 
+                                        width: '100px', 
+                                        height: '100px', 
+                                        borderRadius: '24px', 
+                                        background: 'rgba(16, 185, 129, 0.1)', 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        justifyContent: 'center',
+                                        marginBottom: '2rem',
+                                        border: '1px solid rgba(16, 185, 129, 0.2)',
+                                        fontSize: '3rem'
+                                    }}>
+                                        ✅
+                                    </div>
+                                    <h1 style={{ fontSize: '2.5rem', color: '#fff', marginBottom: '1rem', fontWeight: '800' }}>Phase Completed</h1>
+                                    <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', maxWidth: '500px', lineHeight: 1.6, marginBottom: '3rem' }}>
+                                        You've successfully finished all assessment items for Round {currentRound}. Proceed to the next phase from the navigation bar.
+                                    </p>
+                                    
+                                    <button
+                                        onClick={() => {stopCamera(); setStep('setup');}}
+                                        className="btn outline"
+                                        style={{ padding: '1rem 3rem', borderRadius: '16px' }}
+                                    >
+                                        Return to Selection
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Right: Controls & Transcript */}
+                        <div className="control-panel" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            <div className="answer-card" style={{ 
+                                background: 'var(--glass-bg)', 
+                                border: '1px solid var(--glass-border)', 
+                                padding: '2rem', 
+                                borderRadius: '24px',
+                                display: 'flex', 
+                                flexDirection: 'column', 
+                                gap: '1.5rem',
+                                height: 'fit-content'
+                            }}>
+                            {step === 'feedback' && feedback ? (
+                                /* --- Feedback / Result Mode --- */
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', height: '100%', animation: 'fadeIn 0.5s ease-out' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <h3 style={{ margin: 0, color: 'var(--primary)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.8rem' }}>Insight Report</h3>
+                                        <span className="badge success">COMPLETED</span>
+                                    </div>
+
+                                    <div style={{ 
+                                        padding: '1.5rem', 
+                                        background: 'rgba(255,255,255,0.02)', 
+                                        borderRadius: '20px', 
+                                        border: '1px solid var(--glass-border)',
+                                        textAlign: 'center'
+                                    }}>
+                                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: '700', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Efficiency Score</div>
+                                        <div style={{ fontSize: '3.5rem', fontWeight: '900', color: feedback.score > 7 ? 'var(--success)' : 'var(--warning)' }}>
+                                            {feedback.score}<span style={{ fontSize: '1.2rem', opacity: 0.5 }}>/10</span>
+                                        </div>
+                                    </div>
+
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                        <h4 style={{ margin: 0, color: '#fff', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                            <div style={{ width: '4px', height: '16px', background: 'var(--primary)', borderRadius: '2px' }}></div>
+                                            Detailed Analysis
+                                        </h4>
+                                        <p style={{ lineHeight: '1.7', color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+                                            {feedback.feedback}
+                                        </p>
+                                    </div>
+
+                                    {feedback.correct_answer_summary && (
+                                        <div style={{ 
+                                            background: 'rgba(16, 185, 129, 0.05)', 
+                                            border: '1px solid rgba(16, 185, 129, 0.15)', 
+                                            padding: '1.5rem', 
+                                            borderRadius: '20px' 
+                                        }}>
+                                            <div style={{ color: 'var(--success)', fontWeight: '800', marginBottom: '0.75rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                                <Award size={16} /> IDEAL REFERENCE
+                                            </div>
+                                            <p style={{ margin: 0, fontSize: '0.95rem', color: '#d1fae5', lineHeight: '1.6' }}>
+                                                {feedback.correct_answer_summary}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    <button
+                                        onClick={nextQuestion}
+                                        className="btn primary"
+                                        style={{ justifyContent: 'center', padding: '1.25rem', fontSize: '1rem', marginTop: 'auto', borderRadius: '16px' }}
+                                        disabled={loading}
+                                    >
+                                        {loading ? <RefreshCw className="spin" size={20} /> : <><Play size={20} /> Proceed to Next</>}
                                     </button>
                                 </div>
                             ) : (
                                 /* --- Input / Answer Mode --- */
-                                <>
-                                    <div className="answer-card-header">
-                                        <h3>Your Answer</h3>
-                                        <div className="badge" style={{ background: isListening ? 'rgba(239, 68, 68, 0.2)' : 'rgba(148, 163, 184, 0.1)', color: isListening ? 'var(--danger)' : 'var(--text-secondary)' }}>
-                                            {isListening ? '● LISTENING' : 'READY'}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', height: '100%' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <h3 style={{ margin: 0, color: 'var(--primary)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.8rem' }}>Live Transcript</h3>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', fontWeight: '700', color: isListening ? 'var(--danger)' : 'var(--text-muted)' }}>
+                                            {isListening && <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--danger)', animation: 'pulse-animation 1s infinite' }}></div>}
+                                            {isListening ? 'LISTENING...' : 'VOICE INACTIVE'}
                                         </div>
                                     </div>
 
                                     <textarea
                                         value={userAnswer}
                                         onChange={(e) => setUserAnswer(e.target.value)}
-                                        placeholder="State your answer clearly..."
-                                        className="answer-input"
+                                        placeholder="Formulate your response here. You can type manually or use the voice recording feature..."
+                                        style={{ 
+                                            flex: 1,
+                                            background: 'rgba(255,255,255,0.02)',
+                                            border: '1px solid var(--glass-border)',
+                                            borderRadius: '20px',
+                                            padding: '1.5rem',
+                                            fontSize: '1rem',
+                                            color: '#fff',
+                                            lineHeight: '1.6',
+                                            minHeight: '200px'
+                                        }}
                                     />
 
-                                    <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: 'auto' }}>
+                                    <div className="grid" style={{ gridTemplateColumns: '1fr 1.5fr', gap: '1rem', marginTop: 'auto' }}>
                                         <button
                                             onClick={toggleMic}
                                             className="btn"
                                             style={{
-                                                background: isListening ? 'var(--danger)' : 'rgba(255,255,255,0.05)',
-                                                border: isListening ? 'none' : '1px solid var(--border)',
-                                                color: isListening ? 'white' : 'var(--text-primary)',
-                                                justifyContent: 'center'
+                                                background: isListening ? 'rgba(239, 68, 68, 0.1)' : 'rgba(255,255,255,0.05)',
+                                                border: `1px solid ${isListening ? 'var(--danger)' : 'var(--glass-border)'}`,
+                                                color: isListening ? 'var(--danger)' : '#fff',
+                                                justifyContent: 'center',
+                                                borderRadius: '16px'
                                             }}
                                         >
                                             {isListening ? <><MicOff size={20} /> Stop</> : <><Mic size={20} /> Record</>}
@@ -504,26 +712,34 @@ export default function MockTest() {
                                             onClick={submitAnswer}
                                             className="btn primary"
                                             disabled={!userAnswer.trim() || loading}
-                                            style={{ justifyContent: 'center' }}
+                                            style={{ justifyContent: 'center', borderRadius: '16px' }}
                                         >
-                                            {loading ? <RefreshCw className="spin" size={20} /> : <Send size={20} />} Submit
+                                            {loading ? <RefreshCw className="spin" size={20} /> : <><Send size={20} /> Submit Response</>}
                                         </button>
                                     </div>
-                                </>
+                                </div>
                             )}
                         </div>
 
                         {/* Tips Card */}
-                        <div className="card" style={{ padding: '1rem 1.5rem', background: 'rgba(6, 182, 212, 0.05)', border: '1px solid rgba(6, 182, 212, 0.2)' }}>
-                            <h4 style={{ margin: '0 0 0.5rem', color: 'var(--accent)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pro Tip</h4>
-                            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0 }}>
+                        <div className="card" style={{ 
+                            padding: '1.5rem', 
+                            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.05), rgba(139, 92, 246, 0.05))', 
+                            border: '1px solid var(--glass-border)',
+                            borderRadius: '20px'
+                        }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                                <Award size={18} color="var(--accent)" />
+                                <h4 style={{ margin: 0, color: 'var(--accent)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800' }}>Engagement Tip</h4>
+                            </div>
+                            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>
                                 {step === 'feedback'
-                                    ? "Review the AI's feedback to understand which key points you missed."
-                                    : "Maintain steady eye contact. Speak at a measured pace. The AI rates confidence based on clarity and keyword usage."
+                                    ? "Compare your response to the ideal reference. Focus on specific technical keywords and structural logic."
+                                    : "Keep your response concise but structured. Use the STAR method for behavioral questions. The AI evaluates both content and clarity."
                                 }
                             </p>
                         </div>
-                        </div>
+                    </div>
                     </div>
                 </div>
             )}
@@ -534,6 +750,14 @@ export default function MockTest() {
                     0% { transform: scale(1); opacity: 1; }
                     50% { transform: scale(1.2); opacity: 0.7; }
                     100% { transform: scale(1); opacity: 1; }
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes slideInUp {
+                    from { transform: translateY(30px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
                 }
             `}</style>
         </div>
