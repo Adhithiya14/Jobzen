@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Briefcase, BookOpen, ExternalLink, MapPin, DollarSign, Clock, RefreshCw } from 'lucide-react';
+import { Briefcase, BookOpen, ExternalLink, MapPin, DollarSign, Clock, RefreshCw, Globe, Linkedin } from 'lucide-react';
+
+
 
 export default function Dashboard() {
     const [jobs, setJobs] = useState([]);
@@ -145,9 +147,10 @@ export default function Dashboard() {
                         <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
                             <Briefcase size={22} color="var(--primary)" /> Recommended Career Paths
                         </h2>
-                        <div className="grid">
+                        <div className="scroll-x" style={{ paddingBottom: '1.5rem' }}>
                             {jobs.map(job => (
-                                <div key={job.id} className="card flex-col" style={{ gap: '1.5rem' }}>
+                                <div key={job.id} className="card flex-col" style={{ gap: '1.5rem', minWidth: '350px', flex: '0 0 auto' }}>
+
                                     <div className="flex-between" style={{ alignItems: 'flex-start' }}>
                                         <div style={{ flex: 1 }}>
                                             <h3 style={{ fontSize: '1.35rem', color: '#fff', marginBottom: '0.35rem' }}>{job.title}</h3>
@@ -190,9 +193,18 @@ export default function Dashboard() {
                                         </div>
                                     )}
 
-                                    <a href={job.apply_link || "#"} target="_blank" rel="noopener noreferrer" className="btn primary" style={{ width: '100%', borderRadius: '12px', justifyContent: 'center' }}>
-                                        Apply Now
-                                    </a>
+                                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                                        <a href={job.apply_link || "#"} target="_blank" rel="noopener noreferrer" className="btn primary" style={{ flex: 1, borderRadius: '12px', justifyContent: 'center', whiteSpace: 'nowrap' }}>
+                                            <Linkedin size={16} style={{ marginRight: '0.5rem' }} /> Apply LinkedIn
+                                        </a>
+
+                                        <a href={job.company_url || "#"} target="_blank" rel="noopener noreferrer" className="btn" style={{ 
+                                            flex: 1, borderRadius: '12px', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', whiteSpace: 'nowrap' 
+                                        }}>
+                                            <Globe size={16} style={{ marginRight: '0.5rem' }} /> Official Site
+                                        </a>
+                                    </div>
+
                                 </div>
                             ))}
                         </div>

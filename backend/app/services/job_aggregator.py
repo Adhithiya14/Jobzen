@@ -13,7 +13,9 @@ class JobOutput(BaseModel):
     location: str
     match_score: int
     apply_link: str
+    company_url: str
     source: str
+
 
 class JobAggregatorResponse(BaseModel):
     jobs: List[JobOutput]
@@ -55,7 +57,9 @@ class JobAggregatorService:
                             "location": job.get("location", {}).get("display_name", "Unknown Location"),
                             "description": job.get("description", ""),
                             "apply_link": job.get("redirect_url", ""),
+                            "company_url": f"https://www.google.com/search?q={job.get('company', {}).get('display_name', 'Unknown')}+official+website",
                             "source": "Adzuna"
+
                         })
                 else:
                     logger.error(f"Adzuna API Error: {response.status_code} - {response.text}")
@@ -91,7 +95,9 @@ class JobAggregatorService:
                             "location": f"{job.get('job_city', '')} {job.get('job_state', '')}".strip() or "Unknown Location",
                             "description": job.get("job_description", ""),
                             "apply_link": job.get("job_apply_link", ""),
+                            "company_url": job.get("employer_website") or f"https://www.google.com/search?q={job.get('employer_name', 'Unknown')}+official+website",
                             "source": "JSearch"
+
                         })
                 else:
                     logger.error(f"JSearch API Error: {response.status_code} - {response.text}")
@@ -140,7 +146,9 @@ class JobAggregatorService:
                     location=job["location"],
                     match_score=score,
                     apply_link=job["apply_link"],
+                    company_url=job["company_url"],
                     source=job["source"]
+
                 ))
         
         # 9. Sort descending by score

@@ -13,6 +13,8 @@ class Job(BaseModel):
     missing_skills: List[str] = Field(default_factory=list)
     learn_more_links: List[dict] = Field(default_factory=list) #List of {skill: str, url: str}
     apply_link: str = ""
+    company_url: str = ""
+
 
 class Course(BaseModel):
     id: int
@@ -93,8 +95,10 @@ class RecommendationService:
                 required_skills=[skill] + missing,
                 missing_skills=missing,
                 learn_more_links=links,
-                apply_link=f"https://www.linkedin.com/jobs/search/?keywords={job_title.replace(' ', '%20')}"
+                apply_link=f"https://www.linkedin.com/jobs/search/?keywords={job_title.replace(' ', '%20')}",
+                company_url=f"https://www.google.com/search?q={job_company}+official+website"
             ))
+
 
         return jobs
 
@@ -132,8 +136,10 @@ class RecommendationService:
                 required_skills=user_skills if user_skills else [search_role],
                 missing_skills=missing,
                 learn_more_links=links,
-                apply_link=live_job.apply_link
+                apply_link=live_job.apply_link,
+                company_url=live_job.company_url
             ))
+
 
         return mapped_jobs
 

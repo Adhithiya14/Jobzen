@@ -27,7 +27,7 @@ class ChatService:
 
         try:
             genai.configure(api_key=settings.cleaned_gemini_api_key)
-            model = genai.GenerativeModel('gemini-2.5-flash')
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             
             # Check for resume context
             resume_text = resume_service.get_current_resume_text()
@@ -58,8 +58,13 @@ class ChatService:
                     yield chunk.text
                     
         except Exception as e:
+            error_msg = str(e).lower()
             print(f"Streaming Error: {str(e)}")
-            yield "I'm currently experiencing high traffic. Please try the direct analysis features in the sidebar!"
+            if "key" in error_msg or "403" in error_msg or "404" in error_msg:
+                yield "I'm having trouble connecting to my AI core. Please check your API key in the .env file!"
+            else:
+                yield "I'm currently experiencing high traffic. Please try the direct analysis features in the sidebar!"
+
 
     async def generate_response(self, message: str, history: list = []) -> str:
         from backend.app.services.resume import resume_service
@@ -70,7 +75,7 @@ class ChatService:
 
         try:
             genai.configure(api_key=settings.cleaned_gemini_api_key)
-            model = genai.GenerativeModel('gemini-2.5-flash')
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             
             # Check for resume context
             resume_text = resume_service.get_current_resume_text()

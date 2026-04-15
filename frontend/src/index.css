@@ -92,7 +92,8 @@ body {
 
 .content {
   flex: 1;
-  overflow: hidden;
+  overflow: hidden auto; /* Allow scrolling but keep x contained if possible */
+
   position: relative;
   display: flex;
   flex-direction: column;
@@ -103,14 +104,16 @@ body {
 
 .page-container {
   padding: 2.5rem;
-  max-width: 1300px;
+  max-width: 1400px; /* Increased for better spread */
   width: 100%;
   margin: 0 auto;
   animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll on general container */
   height: 100%;
 }
+
 
 @keyframes slideInUp {
   from {
@@ -411,11 +414,13 @@ select:focus {
   padding: 1.5rem 2.5rem;
   background: rgba(11, 15, 21, 0.95);
   backdrop-filter: blur(10px);
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--glass-border);
   display: flex;
   gap: 1rem;
   align-items: center;
+  z-index: 10;
 }
+
 
 .icon-btn {
   background: none;
@@ -583,14 +588,40 @@ select:focus {
   }
 }
 
-.spin {
-  animation: spin 1s linear infinite;
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
 }
 
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Custom Scroll Handling for Horizontal Sections */
+.scroll-x {
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  margin-bottom: -1rem;
+  scrollbar-width: thin;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.scroll-x::-webkit-scrollbar {
+  height: 4px;
+}
+
+.scroll-x::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.scroll-x::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-glow);
 }
 
 /* --- Interview Focus Mode --- */

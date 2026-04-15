@@ -220,7 +220,7 @@ class ResumeService:
         # 2. Real AI Mode
         try:
             genai.configure(api_key=settings.cleaned_gemini_api_key)
-            model = genai.GenerativeModel('gemini-2.5-flash')
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             
             # Construct Prompt (AI used only for narrative fields)
             resume_context_str = RESUME_AWARE_CONTEXT_TEMPLATE.format(resume_text=text[:15000]) # Limit length

@@ -4,6 +4,9 @@ from functools import lru_cache
 class Settings(BaseSettings):
     PROJECT_NAME: str = "JobZen AI"
     GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.5-flash"
+
+
     
     @property
     def cleaned_gemini_api_key(self) -> str:

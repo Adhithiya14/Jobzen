@@ -121,7 +121,7 @@ class InterviewService:
 
         try:
             genai.configure(api_key=settings.cleaned_gemini_api_key)
-            model = genai.GenerativeModel('gemini-2.5-flash')
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             
             # Prepare Resume Context
             resume_text = resume_service.get_current_resume_text()
@@ -185,7 +185,7 @@ class InterviewService:
 
         try:
             genai.configure(api_key=settings.cleaned_gemini_api_key)
-            model = genai.GenerativeModel('gemini-2.5-flash')
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             
             # Prepare Resume Context
             resume_text = resume_service.get_current_resume_text()
